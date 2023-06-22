@@ -5,13 +5,13 @@ This is a Aiml based chatbot which also has ML, Prolog, Neo4j, NLTK and many new
 This repository contains a chatbot project implemented using Python and Flask. The chatbot is built using AIML (Artificial Intelligence Markup Language) and incorporates various natural language processing (NLP) techniques.
 
 # Features
-User authentication and signup
-Chatbot conversation and response generation
-Sentiment analysis of user input
-Definition lookup for specific words
-Gender prediction using machine learning
-Prolog-like knowledge base operations
-Integration with Neo4j graph database
+🔴User authentication and signup
+🔴Chatbot conversation and response generation
+🔴Sentiment analysis of user input
+🔴Definition lookup for specific words
+🔴Gender prediction using machine learning
+🔴Prolog-like knowledge base operations
+🔴Integration with Neo4j graph database
 # Prerequisites
 Before running the project, make sure you have the following dependencies installed:
 
