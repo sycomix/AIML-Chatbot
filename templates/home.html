@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        :root {
+            /* Set cube size */
+            --w: 256px;
+            --h: 256px;
+
+            /* Other variables */
+            --start-pos: translateZ(-8rem) rotateX(330deg) rotateY(-45deg);
+            --end-pos: translateZ(-8rem) rotateY(180deg);
+            --anim-duration: 350ms;
+            --half-w: calc(var(--w) / 2);
+            --half-h: calc(var(--h) / 2);
+        }
+
+        /* Base Styles */
+        body {
+            margin: 0;
+            background: #dfdfe6;
+            color: #202124;
+            font-family: sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        section {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Set section height to full viewport height */
+            display: flex;
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+            background-color: transparent; /* Set transparent background */
+            color: #202124;
+            font-family: sans-serif;
+        }
+
+        .header {
+            margin: 16px 0 128px;
+        }
+
+        h1,
+        p,
+        a {
+            color: #fff; /* Set text color to white */
+            margin: 0px 0px 10px;
+            text-decoration: none;
+        }
+
+        h1:hover,
+        p:hover {
+            color: #14189d;
+        }
+
+        h1 {
+            font-size: 48px; /* Increased font size */
+            font-family: "Roboto Condensed", sans-serif; /* Set custom font family */
+            animation: slideIn 2s infinite alternate; /* Add animation */
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .wrapper {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cubes-grid {
+            width: 100%;
+            max-width: calc(var(--w) * 5);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto;
+            gap: 10em; /* Adjust the gap as needed */
+            justify-items: center;
+            align-items: center;
+            margin-bottom: 64px;
+        }
+
+        /* 3D Cube Styles */
+
+        .item {
+            width: var(--w);
+            height: var(--h);
+        }
+
+        .cube {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: scale(0.9) var(--start-pos);
+            transition: transform var(--anim-duration);
+        }
+
+        .item:hover .cube {
+            transform: var(--end-pos) scale(1);
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(192, 192, 192, 0.8); /* Translucent grey background */
+        }
+
+        .cube-face div {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .front {
+            transform: rotateY(0deg) translateZ(var(--half-w));
+        }
+
+        .right {
+            transform: rotateY(90deg) translateZ(var(--half-w));
+        }
+
+        .back {
+            transform: rotateY(180deg) translateZ(var(--half-w));
+        }
+
+        .left {
+            transform: rotateY(-90deg) translateZ(var(--half-w));
+        }
+
+        .top {
+            width: var(--w);
+            height: var(--w);
+            transform: rotateX(90deg) translateZ(var(--half-w));
+        }
+
+        .top-content {
+            transform: rotateZ(-45deg);
+            font-size: 24px; /* Increased font size */
+        }
+
+        /* Add styles for the video container */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Define the slideIn animation */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+<section>
+    <!-- Add the video container before the wrapper -->
+    <div class="video-container">
+        <video autoplay muted loop id="video-background">
+            <source src="{{ url_for('static', filename='video/867076066.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="wrapper">
+        <div class="header">
+            <h1>Welcome to Everything Bot!</h1>
+        </div>
+        <div class="cubes-grid">
+            <div class="item">
+                <div class="cube">
+                    <div class="cube-face front"></div>
+                    <div class="cube-face back"></div>
+                    <div class="cube-face right"></div>
+                    <div class="cube-face left"></div>
+                    <div class="cube-face top">
+                        <div class="top-content">More About us?</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="cube">
+                    <div class="cube-face front"></div>
+                    <div class="cube-face back">
+                        <div>
+                            <div><a href="{{url_for('login')}}">Login</a></div>
+                        </div>
+                    </div>
+                    <div class="cube-face right"></div>
+                    <div class="cube-face left"></div>
+                    <div class="cube-face top">
+                        <div class="top-content">Have an account?</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="cube">
+                    <div class="cube-face front"></div>
+                    <div class="cube-face back">
+                        <div>
+                            <div><a href="{{url_for('signup')}}">Signup!!</a></div>
+                        </div>
+                    </div>
+                    <div class="cube-face right"></div>
+                    <div class="cube-face left"></div>
+                    <div class="cube-face top">
+                        <div class="top-content">Join Us</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

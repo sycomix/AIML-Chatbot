@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('C:\Users\muham\ChatBot_ff\static\video\mp36ugyeuxhz.jpg');
+            background-size: cover;
+        }
+
+        .form-container {
+            width: 400px; /* Adjusted width to 400px */
+            padding: 40px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            animation: fade-in 1s ease-in-out;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-color: #800000;
+            opacity: 0.5;
+            filter: blur(20px);
+            z-index: -1;
+            border-radius: 10px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(128, 0, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(128, 0, 0, 1);
+            }
+        }
+
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333333;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666666;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #800000;
+            border-radius: 4px;
+            transition: border-color 0.3s ease-in-out;
+            font-weight: 300;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #800000;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #800000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #550000;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Signup Form</h2>
+
+        <form id="signup-form" method="POST">
+            <div class="form-group">
+                <label for="fname">First Name:</label>
+                <input type="text" name="fname" id="fname">
+            </div>
+            <div class="form-group">
+                <label for="lname">Last Name:</label>
+                <input type="text" name="lname" id="lname">
+            </div>
+            <div class="form-group">
+                <label for="uname">Username:</label>
+                <input type="text" name="uname" id="uname">
+            </div>
+            <div class="form-group">
+                <label for="mail">Email:</label>
+                <input type="email" name="mail" id="mail">
+            </div>
+            <div class="form-group">
+                <label for="passw">Password:</label>
+                <input type="password" name="passw" id="passw">
+            </div>
+            <div class="form-group">
+                <label for="confirmpassw">Confirm Password:</label>
+                <input type="password" name="confirmpassw" id="confirmpassw">
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript code
+        document.getElementById("signup-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get form data
+            var fname = document.getElementById("fname").value;
+            var lname = document.getElementById("lname").value;
+            var uname = document.getElementById("uname").value;
+            var mail = document.getElementById("mail").value;
+            var passw = document.getElementById("passw").value;
+            var confirmpassw = document.getElementById("confirmpassw").value;
+
+            // Perform additional validation or processing if needed
+
+            // Check if password and confirm password match
+            if (passw !== confirmpassw) {
+                alert("Password and Confirm Password do not match.");
+                return;
+            }
+
+            // Submit the form
+            this.submit();
+        });
+    </script>
+</body>
+</html>
