@@ -45,8 +45,7 @@ def predict_gender(name):
     vectorizer.vocabulary_ = vocabulary
 
     name_vectorized = vectorizer.transform([name])
-    predicted_gender = model.predict(name_vectorized)[0]
-    return predicted_gender
+    return model.predict(name_vectorized)[0]
 
 # ---------------------------------------------------------------
 
@@ -55,9 +54,7 @@ def find_definition_word(query):
         return query[26:]
     if query.startswith("define "):
         return query[7:]
-    if query.startswith("tell me about "):
-        return query[13:]
-    return ""
+    return query[13:] if query.startswith("tell me about ") else ""
 
 # ---------------------------------------------------------------
 
@@ -111,9 +108,7 @@ def login():
         k.setPredicate("name", username)
 
         q_get = "MATCH (u:User {username: $username}) RETURN u"
-        result = graph.run(q_get, username=username).data()
-
-        if result:
+        if result := graph.run(q_get, username=username).data():
             user = result[0]['u']
             hashed_password = user['password']
 
@@ -136,42 +131,41 @@ def login():
 
 @main.route("/signup", methods=["GET", "POST"])
 def signup():
-    if request.method == "POST":
-        fname = request.form['fname']
-        lname = request.form['lname']
-        uname = request.form['uname']
-        mail = request.form['mail']
-        passw = request.form['passw']
-        confirmpassw = request.form['confirmpassw']
-        gender = predict_gender(fname)
+    if request.method != "POST":
+        return render_template("signup.html")
+    fname = request.form['fname']
+    lname = request.form['lname']
+    uname = request.form['uname']
+    mail = request.form['mail']
+    passw = request.form['passw']
+    confirmpassw = request.form['confirmpassw']
+    gender = predict_gender(fname)
 
-        # CHECK ALL FIELDS ARE FILLED
-        if not fname or not lname or not uname or not mail or not passw:
-            flash("Please fill in all fields.")
-            return redirect(url_for("signup"))
+    # CHECK ALL FIELDS ARE FILLED
+    if not fname or not lname or not uname or not mail or not passw:
+        flash("Please fill in all fields.")
+        return redirect(url_for("signup"))
 
-        # Check if password and confirm password match
-        if passw != confirmpassw:
-            flash("Password and Confirm Password do not match.")
-            return redirect(url_for("signup"))
+    # Check if password and confirm password match
+    if passw != confirmpassw:
+        flash("Password and Confirm Password do not match.")
+        return redirect(url_for("signup"))
 
-        # Get the user's IP address
-        ip_address = request.remote_addr
+    # Get the user's IP address
+    ip_address = request.remote_addr
 
-        # Hash the password using bcrypt
-        hashed_password = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
+    # Hash the password using bcrypt
+    hashed_password = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
 
-        q_create = '''
+    q_create = '''
                    create (n:Users {firstname: $firstname, lastname: $lastname, username: $username,
                    email: $email, password: $password, gender: $gender, ip_address: $ip_address})
                '''
 
-        graph.run(q_create, firstname=fname, lastname=lname, username=uname, email=mail,
-                  password=hashed_password.decode('utf-8'), gender=gender, ip_address=ip_address)
-        flash("Signup Complete.")
-        return redirect(url_for("login"))
-
-    return render_template("signup.html")
+    graph.run(q_create, firstname=fname, lastname=lname, username=uname, email=mail,
+              password=hashed_password.decode('utf-8'), gender=gender, ip_address=ip_address)
+    flash("Signup Complete.")
+    return redirect(url_for("login"))
 # ---------------------------------------------------------------
 
 @main.route("/<query>")
@@ -207,10 +201,10 @@ def api(query):
         tokens = nltk.word_tokenize(sentence)
         pos_tags = nltk.pos_tag(tokens)
         sentiment = get_sentiment(sentence)
-        pprint.pprint("Sentence: {}".format(sentence))
-        pprint.pprint("Tokens: {}".format(tokens))
-        pprint.pprint("POS Tags: {}".format(pos_tags))
-        pprint.pprint("Sentiment: {}".format(sentiment))
+        pprint.pprint(f"Sentence: {sentence}")
+        pprint.pprint(f"Tokens: {tokens}")
+        pprint.pprint(f"POS Tags: {pos_tags}")
+        pprint.pprint(f"Sentiment: {sentiment}")
         if query.lower() == "prolog":
             bot_response += "Bot: Prolog mode initiated. Options:\n"
             bot_response += "> prolog search\n"
@@ -221,7 +215,7 @@ def api(query):
             for fact in knowledge_base:
                 if prolog_query in fact:
                     result_found = True
-                    bot_response += "Bot: Found result: {}\n".format(fact)
+                    bot_response += f"Bot: Found result: {fact}\n"
             if not result_found:
                 bot_response += "Bot: No results found.\n"
         elif query.startswith("prolog add"):
@@ -234,8 +228,9 @@ def api(query):
             ip_address = request.remote_addr
 
             q_check_person = "MATCH (u:User) WHERE u.ip_address = $ip_address RETURN u.username"
-            result = graph.run(q_check_person, ip_address=ip_address).data()
-            if result:
+            if result := graph.run(
+                q_check_person, ip_address=ip_address
+            ).data():
                 username = result[0]['u.username']
                 bot_response += f"Bot: Do you know {username}?"
                 # Set the predicate "ipaddress" to "hostname"
@@ -251,11 +246,9 @@ def api(query):
                     graph.run(q_create_relation, username=username, chatbot_username=k.getPredicate("name"))
 
         for word, pos_tag in pos_tags:
-            word = find_definition_word(query)
-            if word:
+            if word := find_definition_word(query):
                 definition = ''
-                synsets = wordnet.synsets(word)
-                if synsets:
+                if synsets := wordnet.synsets(word):
                     definition = synsets[0].definition()
                     k.setPredicate("definition", definition)
         bot_response += response
